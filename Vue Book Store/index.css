@@ -1,0 +1,23 @@
+.mycard:hover {
+    background-image: linear-gradient(to bottom, rgba(211, 211, 211, 0.85) 70%, transparent);
+}
+
+.more {
+    color: green;
+    font-weight: bold;
+}
+
+.less {
+    color: orange;
+    font-weight: bold;
+}
+
+.none {
+    color: red;
+    font-weight: bold;
+}
+
+
+.stock {
+    font-weight: bold;
+}

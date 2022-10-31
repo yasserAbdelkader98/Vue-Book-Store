@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link href="./index.css" rel="stylesheet">
+    <script src="./vueversion3.js"></script>
+    <title>Book Store</title>
+</head>
+<body>
+    <div id="mainDiv" class="mx-5">
+        
+        <!-- start nav bar ============================================== -->
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark px-3 d-flex justify-content-between">
+                <a @click="hideWishList= true" class="navbar-brand" href="#">BOOKS</a>
+                <div>
+                    <span class="text-light px-2">{{itemCounter}} items purchased with price {{totalAmount}}$</span>
+                    <button @click="hideWishList= false" class="btn btn-primary">My Wish List</button>
+                </div>
+        </nav>
+        <!-- end navbar ======================================================== -->
+
+        <!-- start cards ======================================================== -->
+        <div v-if="hideWishList" class="d-flex justify-content-between flex-wrap">
+            <div class="mycard card mt-4" style="width: 18rem;" v-for="book in books" :key="book.id">
+                <img style="height: 300px;" class="card-img-top" :src="book.imageLink" :title="`year: `+book.year">
+                <div class="card-body">
+                  <h5 class="card-title">{{book.title}}</h5>
+                  <p> by: {{book.author}}</p>
+                  <p :class="[book.pages>400 ? 'more':'less']">Pages : {{book.pages}}</p>
+                  <p>Price: {{book.price}}$</p>
+                  <button :disabled="book.disabled" @click="addProduct(book)" class="btn btn-primary">Add to WishList</button>
+                </div>
+              </div>
+        </div>
+        <!-- end cards ========================================================== -->
+
+        <!-- start wish list ===================================================== -->
+        <div v-if="hideWishList == false">
+            <h3 v-if="wishList.length == 0" class="text-center m-3">Sorry, WishList is empty, Add some books from the store</h3>
+        
+              <table v-else class="table table-dark my-4">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">NAME</th>
+                    <th scope="col">PRICE</th>
+                    <th scope="col">REMOVE</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="item of wishList">
+                    <th scope="row">{{item.id}}</th>
+                    <td>{{item.title}}</td>
+                    <td>{{item.price}}$</td>
+                    <td><button @click="removeItem(item)" class="btn btn-danger">Remove</button></td>
+                  </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th scope="row">Total Amount before taxes</th>
+                        <td></td>
+                        <td>{{totalAmount}}$</td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">taxes</th>
+                        <td></td>
+                        <td>{{totalAmount * 10 /100}}$</td>
+                        <td></td>
+                      </tr>
+                      <tr>
+                        <th scope="row">Total Amount after taxes</th>
+                        <td></td>
+                        <td>{{totalAmount + (totalAmount * 10 /100)}}$</td>
+                        <td><button class="btn btn-success">Confirm</button></td>
+                      </tr>
+                </tfoot>
+              </table>
+              
+        </div>
+        
+        <!-- end wishlist ======================================================== -->
+
+
+
+    </div>
+
+
+    <script src="books.js"></script>
+    <script> 
+        const app = Vue.createApp({
+            data: () => ({
+                books:BOOKS,
+                hideWishList:true,
+                itemCounter:0,
+                totalAmount:0,
+                wishList:[]
+            }),
+            methods:{
+            addProduct(book){
+                this.totalAmount+=book.price
+                this.itemCounter++
+                book.disabled = true
+                this.wishList.push(book)
+            },
+            removeItem(item){
+                this.totalAmount-=item.price
+                this.itemCounter--
+                let itemIndex = this.wishList.indexOf(item)
+                this.wishList.splice(itemIndex,1)
+                item.disabled = false
+            }
+            }
+        });
+        app.mount("#mainDiv");
+        </script>
+</body>
+</html>
